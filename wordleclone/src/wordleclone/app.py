@@ -76,6 +76,7 @@ class wordleClone(toga.App):
         self.new_word() # selects a new word
         self.clear_grid() # removes current grid
         self.fill_grid() # repopulates with empty grid
+        self.guess_input.clear() # clear guess box
         self.attempts = 0 # reset attempts to 0
 
     def reset(self): # method for resetting game after game is over
@@ -83,6 +84,7 @@ class wordleClone(toga.App):
         self.new_word()
         self.clear_grid()
         self.fill_grid()
+        self.guess_input.clear() # clear guess box
         self.attempts = 0
 
     def fill_grid(self):
