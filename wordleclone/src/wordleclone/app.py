@@ -2,12 +2,13 @@ from turtle import clear, color
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
+import random
 
 class wordleClone(toga.App):
 
     def startup(self):
 
-        self.answer = "czari"
+        self.new_word()
 
         self.attempts = 0
 
@@ -54,7 +55,7 @@ class wordleClone(toga.App):
         restart_button = toga.Button(
             'Restart',
             style = Pack(padding = 10),
-            on_press=self.reset
+            on_press=self.restart
         )
 
         main_box.add(guess_box)
@@ -67,8 +68,21 @@ class wordleClone(toga.App):
         self.main_window.content = main_box
         self.main_window.show()
 
-    def reset(self, widget):
+    def new_word(self):
+        words = open("{}\\words.txt".format(self.paths.app)).readlines()
+        word_ind = random.randrange(len(words))
+        self.answer = words[word_ind][:5]
+
+    def restart(self, widget):
+        print("RESTARTING")
+        self.new_word()
+        self.clear_grid()
+        self.fill_grid()
+        self.attempts = 0
+
+    def reset(self):
         print("RESETTING")
+        self.new_word()
         self.clear_grid()
         self.fill_grid()
         self.attempts = 0
@@ -145,8 +159,7 @@ class wordleClone(toga.App):
                 "CORRECT GUESS!",
                 "You correctly guessed {}".format(self.answer)
             )           
-            self.clear_grid()
-            self.fill_grid()
+            self.reset()
 
         self.guess_input.clear()
 
@@ -155,9 +168,7 @@ class wordleClone(toga.App):
                 "GAME OVER",
                 "The correct word is {}".format(self.answer)
             )           
-            self.clear_grid()
-            self.fill_grid()
-
+            self.reset()
 
 def main():
     return wordleClone()
