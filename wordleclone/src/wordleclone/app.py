@@ -4,9 +4,27 @@ from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
 import random
 
+class labels():
+    guess_label = toga.Label(
+        'Guess: ',
+        style=Pack(padding=(0, 5))
+    )
+    legend = toga.Label(
+        'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',
+        style = Pack(
+            text_align = CENTER,
+            padding = 10
+        )
+    )
+
+class boxes():
+    guess_box = toga.Box(style=Pack(direction=ROW, padding=5))
+    grid = toga.Box(style=Pack(direction=COLUMN, padding=(0,240), alignment=CENTER))
+
 class wordleClone(toga.App):
 
     def startup(self):
+        self.allowed_guesses = open("{}\\allowed_guesses.txt".format(self.paths.app)).readlines()
 
         self.new_word()
 
@@ -17,13 +35,10 @@ class wordleClone(toga.App):
         )
 
         # Guess input
-        guess_label = toga.Label(
-            'Guess: ',
-            style=Pack(padding=(0, 5))
-        )
+        guess_label = labels().guess_label
         self.guess_input = toga.TextInput(style=Pack(flex=1))
+        guess_box = boxes().guess_box
 
-        guess_box = toga.Box(style=Pack(direction=ROW, padding=5))
         guess_box.add(guess_label)
         guess_box.add(self.guess_input)
 
@@ -35,18 +50,11 @@ class wordleClone(toga.App):
         )
 
         # Legend
-        legend = toga.Label(
-            'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z',
-            style = Pack(
-                text_align = CENTER,
-                padding = 10
-            )
-        )
+        legend = labels().legend
 
         # Letter Boxes
-        # initiate grid as box
-        self.grid = toga.Box(style=Pack(direction=COLUMN, padding=(0,240), alignment=CENTER))
-        
+        self.grid = boxes().grid
+
         self.rows = [] # container for all rows, for easier manipulation
 
         self.fill_grid()
@@ -102,20 +110,25 @@ class wordleClone(toga.App):
     def clear_grid(self):
         for i in range(6):
             self.grid.remove(self.rows[i])
-        
+
     def update_grid(self):
         for i in range(6):
             self.grid.add(self.rows[i])
 
     def validate_guess(self, widget):
         guess_inp = str(self.guess_input.value)
+
+        print((guess_inp+"\n") in self.allowed_guesses)
+
         error_message = ""
 
-        if not(guess_inp.isalpha()):
+        if len(guess_inp) != 5:
+            error_message = "Guess must contain five letters"
+        elif not(guess_inp.isalpha()):
             error_message = "Guess must contain only letters"
-        elif (len(guess_inp) != 5):
-            error_message = "Guess must contain five characters"
-        
+        elif ((guess_inp+"\n") not in self.allowed_guesses):
+            error_message = "Guess is not a valid guess"
+
         if error_message != "":
             self.main_window.info_dialog(
                 "Invalid Guess",
@@ -161,14 +174,14 @@ class wordleClone(toga.App):
             )           
             self.reset()
 
-        self.guess_input.clear()
-
         if self.attempts == 6 and guess != answer:
             self.main_window.info_dialog(
                 "GAME OVER",
                 "The correct word is {}".format(self.answer)
             )           
             self.reset()
+
+        self.guess_input.clear()
 
 def main():
     return wordleClone()
