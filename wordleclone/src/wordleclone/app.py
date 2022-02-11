@@ -97,24 +97,21 @@ class wordleClone(toga.App):
         guess_inp = str(self.guess_input.value)
         error_message = ""
 
-        if (len(guess_inp) != 5):
-            error_message = "Guess must contain five characters"
-        elif not(guess_inp.isalpha()):
+        if not(guess_inp.isalpha()):
             error_message = "Guess must contain only letters"
+        elif (len(guess_inp) != 5):
+            error_message = "Guess must contain five characters"
         
         if error_message != "":
             self.main_window.info_dialog(
                 "Invalid Guess",
                 error_message
-                self.guess_inp.clear
             )
+            self.guess_input.clear()
         else:
             self.game_logic()
 
     def game_logic (self):
-
-        print(self.attempts)
-
         self.attempts += 1
 
         answer = self.answer
@@ -126,21 +123,41 @@ class wordleClone(toga.App):
 
         self.clear_grid()
 
+        # 0: GRAY 1: GREEN 2: YELLOW
         for i in range(5):
             if guess[i] == answer[i]:
-                letter = toga.Button("", style=Pack(width = 40, height = 40, padding = 3, background_color = "Green"))
+                letter = toga.Button("{}".format(guess[i]), style=Pack(width = 40, height = 40, padding = 3, background_color = "Green"))
                 new_row.add(letter)
             elif guess[i] in answer:
-                letter = toga.Button("", style=Pack(width = 40, height = 40, padding = 3, background_color = "Yellow"))
+                letter = toga.Button("{}".format(guess[i]), style=Pack(width = 40, height = 40, padding = 3, background_color = "Yellow"))
                 new_row.add(letter)
             else:
-                letter = toga.Button("", style=Pack(width = 40, height = 40, padding = 3, background_color = "Gray"))
+                letter = toga.Button("{}".format(guess[i]), style=Pack(width = 40, height = 40, padding = 3, background_color = "Gray"))
                 new_row.add(letter)
 
         self.rows.pop(self.attempts-1)
         self.rows.insert(self.attempts-1, new_row)
 
         self.update_grid()
+
+        if guess == answer:
+            self.main_window.info_dialog(
+                "CORRECT GUESS!",
+                "You correctly guessed {}".format(self.answer)
+            )           
+            self.clear_grid()
+            self.fill_grid()
+
+        self.guess_input.clear()
+
+        if self.attempts == 6 and guess != answer:
+            self.main_window.info_dialog(
+                "GAME OVER",
+                "The correct word is {}".format(self.answer)
+            )           
+            self.clear_grid()
+            self.fill_grid()
+
 
 def main():
     return wordleClone()
