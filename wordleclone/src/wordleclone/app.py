@@ -110,7 +110,6 @@ class wordleClone(toga.App):
     def validate_guess(self, widget):
         guess_inp = str(self.guess_input.value)
 
-
         # error handling
         error_message = ""
         if len(guess_inp) != 5:
