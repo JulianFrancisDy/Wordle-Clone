@@ -125,7 +125,7 @@ class wordleClone(toga.App):
         elif not(guess_inp.isalpha()):
             error_message = "Guess must contain only letters"
         elif ((guess_inp+"\n") not in self.allowed_guesses):
-            error_message = "Guess is not a valid guess"
+            error_message = "{} is not a valid guess".format(guess_inp)
 
         if error_message != "": # there is an error, release prompt
             self.main_window.info_dialog(
@@ -175,13 +175,13 @@ class wordleClone(toga.App):
         if guess == answer: # correct guess
             self.main_window.info_dialog(
                 "CORRECT GUESS!",
-                "You correctly guessed {}".format(self.answer)
+                "You correctly guessed {}\n\nClick OK to start new game".format(self.answer)
             )           
             self.reset()
         elif self.attempts == 6 and guess != answer:
             self.main_window.info_dialog(
                 "GAME OVER",
-                "The correct word is {}".format(self.answer)
+                "The correct word is {}\n\nClick OK to start new game".format(self.answer)
             )         
             self.reset()
 
