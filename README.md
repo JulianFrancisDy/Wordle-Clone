@@ -24,7 +24,7 @@ A fork of the popular word game Wordle built on Beeware, a Python framework.
   ```
 
 ### Operation:
-
+- Enter the wordleclone directory.
 - Start the  application with:
   
   ``` console
